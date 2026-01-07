@@ -4,7 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/portfolio/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>portfolio</title>
+    <title>Shubham Banekar | Software Engineer</title>
+    <script>
+      // Redirect to hash route for GitHub Pages SPA support
+      (function() {
+        var path = window.location.pathname;
+        var base = '/portfolio';
+        if (path.startsWith(base) && path !== base && path !== base + '/' && !window.location.hash) {
+          var route = path.replace(base, '');
+          window.location.replace(base + '/#' + route);
+        }
+      })();
+    </script>
     <script type="module" crossorigin src="/portfolio/assets/index-BH7HiSXC.js"></script>
     <link rel="stylesheet" crossorigin href="/portfolio/assets/index-DTOin3bN.css">
   </head>
