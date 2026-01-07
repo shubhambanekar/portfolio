@@ -8,6 +8,7 @@ import { Contact } from './pages/Contact';
 import { NotFound } from './pages/NotFound';
 import { ParticlesBackground } from './components/ParticlesBackground';
 import { PageTransition } from './components/PageTransition';
+import { CustomCursor } from './components/CustomCursor';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 
 function AnimatedRoutes() {
@@ -36,6 +37,7 @@ function AppContent() {
       position: 'relative',
       transition: 'background 0.3s ease'
     }}>
+      <CustomCursor />
       <ParticlesBackground />
       <Navbar />
       <AnimatedRoutes />

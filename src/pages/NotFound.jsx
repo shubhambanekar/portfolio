@@ -1,15 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 
 export const NotFound = () => {
   const { isDark } = useTheme();
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [glitchText, setGlitchText] = useState('404');
   const [score, setScore] = useState(0);
   const [gameActive, setGameActive] = useState(false);
   const [bugs, setBugs] = useState([]);
-  const containerRef = useRef(null);
 
   const funnyMessages = [
     "Looks like this page went on vacation... without telling anyone.",
@@ -25,32 +22,6 @@ export const NotFound = () => {
   const [message] = useState(() =>
     funnyMessages[Math.floor(Math.random() * funnyMessages.length)]
   );
-
-  // Glitch effect
-  useEffect(() => {
-    const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-    const interval = setInterval(() => {
-      if (Math.random() > 0.7) {
-        const glitched = '404'.split('').map(char =>
-          Math.random() > 0.5 ? glitchChars[Math.floor(Math.random() * glitchChars.length)] : char
-        ).join('');
-        setGlitchText(glitched);
-        setTimeout(() => setGlitchText('404'), 100);
-      }
-    }, 200);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Mouse tracking for eyes
-  const handleMouseMove = (e) => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      setMousePos({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-      });
-    }
-  };
 
   // Bug spawning for mini-game
   useEffect(() => {
@@ -76,51 +47,8 @@ export const NotFound = () => {
     setScore(prev => prev + 10);
   };
 
-  // Eye component
-  const Eye = ({ cx, cy, size = 40 }) => {
-    const eyeRadius = size / 2;
-    const pupilRadius = size / 4;
-    const maxPupilMove = eyeRadius - pupilRadius - 4;
-
-    const dx = mousePos.x - cx;
-    const dy = mousePos.y - cy;
-    const angle = Math.atan2(dy, dx);
-    const distance = Math.min(Math.sqrt(dx * dx + dy * dy), maxPupilMove * 3);
-    const pupilDistance = Math.min(distance / 3, maxPupilMove);
-
-    const pupilX = Math.cos(angle) * pupilDistance;
-    const pupilY = Math.sin(angle) * pupilDistance;
-
-    return (
-      <g>
-        <circle
-          cx={cx}
-          cy={cy}
-          r={eyeRadius}
-          fill={isDark ? 'white' : '#f0f0f0'}
-          stroke={isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.2)'}
-          strokeWidth="2"
-        />
-        <circle
-          cx={cx + pupilX}
-          cy={cy + pupilY}
-          r={pupilRadius}
-          fill={isDark ? '#1a1a2e' : '#333'}
-        />
-        <circle
-          cx={cx + pupilX - 3}
-          cy={cy + pupilY - 3}
-          r={3}
-          fill="white"
-        />
-      </g>
-    );
-  };
-
   return (
     <div
-      ref={containerRef}
-      onMouseMove={handleMouseMove}
       style={{
         minHeight: '100vh',
         display: 'flex',
@@ -264,45 +192,18 @@ export const NotFound = () => {
         position: 'relative',
         zIndex: 5
       }}>
-        {/* Animated Eyes on 404 */}
-        <div style={{ position: 'relative', marginBottom: '20px' }}>
-          <svg width="300" height="120" viewBox="0 0 300 120" style={{ display: 'block', margin: '0 auto' }}>
-            {/* 4 */}
-            <text x="30" y="100" fontSize="100" fontWeight="900" fill="url(#gradient404)" fontFamily="Inter, sans-serif">4</text>
-
-            {/* 0 with eyes */}
-            <text x="110" y="100" fontSize="100" fontWeight="900" fill="url(#gradient404)" fontFamily="Inter, sans-serif">0</text>
-            <Eye cx={155} cy={55} size={30} />
-
-            {/* 4 */}
-            <text x="190" y="100" fontSize="100" fontWeight="900" fill="url(#gradient404)" fontFamily="Inter, sans-serif">4</text>
-
-            <defs>
-              <linearGradient id="gradient404" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#5B4CDB" />
-                <stop offset="100%" stopColor="#FF6B35" />
-              </linearGradient>
-            </defs>
-          </svg>
-
-          {/* Glitch overlay */}
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            fontSize: '100px',
-            fontWeight: '900',
-            background: 'linear-gradient(135deg, #5B4CDB 0%, #FF6B35 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            opacity: glitchText !== '404' ? 1 : 0,
-            transition: 'opacity 0.05s',
-            pointerEvents: 'none'
-          }}>
-            {glitchText}
-          </div>
+        {/* 404 Text */}
+        <div style={{
+          fontSize: '100px',
+          fontWeight: '900',
+          background: 'linear-gradient(135deg, #5B4CDB 0%, #FF6B35 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          marginBottom: '20px',
+          lineHeight: 1
+        }}>
+          404
         </div>
 
         {/* Funny Message */}
