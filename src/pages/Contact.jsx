@@ -8,6 +8,7 @@ export const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [focused, setFocused] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSent, setIsSent] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const [isShaking, setIsShaking] = useState(false);
   const [isNodding, setIsNodding] = useState(false);
@@ -132,6 +133,7 @@ export const Contact = () => {
       const result = await response.json();
 
       if (result.success) {
+        setIsSent(true);
         setToast({
           show: true,
           message: 'Message sent successfully! I\'ll get back to you soon.',
@@ -139,6 +141,8 @@ export const Contact = () => {
         });
         setFormData({ name: '', email: '', message: '' });
         setValidatedFields({ name: false, email: false, message: false });
+        // Reset sent state after 3 seconds
+        setTimeout(() => setIsSent(false), 3000);
       } else {
         throw new Error('Failed to send');
       }
@@ -188,10 +192,15 @@ export const Contact = () => {
         onClose={() => setToast({ ...toast, show: false })}
       />
 
-      {/* Spinner Animation */}
+      {/* Button Animations */}
       <style>{`
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+        @keyframes popIn {
+          0% { transform: scale(0); opacity: 0; }
+          50% { transform: scale(1.2); }
+          100% { transform: scale(1); opacity: 1; }
         }
       `}</style>
 
@@ -422,8 +431,8 @@ export const Contact = () => {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="glass-button"
+                disabled={isSubmitting || isSent}
+                className={isSent ? '' : 'glass-button'}
                 style={{
                   width: '100%',
                   padding: '18px 32px',
@@ -431,12 +440,16 @@ export const Contact = () => {
                   borderRadius: '50px',
                   fontSize: '16px',
                   fontWeight: '600',
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  cursor: (isSubmitting || isSent) ? 'not-allowed' : 'pointer',
                   opacity: isSubmitting ? 0.7 : 1,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '10px',
+                  background: isSent ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' : undefined,
+                  border: 'none',
+                  transition: 'all 0.4s ease',
+                  transform: isSent ? 'scale(1.02)' : 'scale(1)',
                 }}
               >
                 {isSubmitting ? (
@@ -450,6 +463,20 @@ export const Contact = () => {
                       animation: 'spin 0.8s linear infinite',
                     }} />
                     Sending...
+                  </>
+                ) : isSent ? (
+                  <>
+                    <span style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      animation: 'popIn 0.4s ease',
+                    }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </span>
+                    Sent!
                   </>
                 ) : (
                   'Send Message'
