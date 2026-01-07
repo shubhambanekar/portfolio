@@ -57,7 +57,7 @@ export const Navbar = () => {
             zIndex: 51
           }}>
             <img
-              src="/profile.png"
+              src={`${import.meta.env.BASE_URL}profile.png`}
               alt="Shubham Banekar"
               style={{
                 width: '40px',

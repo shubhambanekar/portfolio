@@ -150,7 +150,7 @@ export const Home = () => {
                 </div>
                 {/* Profile image */}
                 <img
-                  src="/profile.png"
+                  src={`${import.meta.env.BASE_URL}profile.png`}
                   alt="Shubham Banekar"
                   style={{
                     position: 'absolute',
